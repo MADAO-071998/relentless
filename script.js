@@ -10,7 +10,11 @@ button.addEventListener("click", function () {
   const value = input.value.trim();
   if (!value) return;
 
-  habits.push(value);
+  habits.push({
+    id: Date.now(),
+    name: value,
+    completed: false,
+  });
   localStorage.setItem("habits", JSON.stringify(habits));
 
   input.value = "";
@@ -21,12 +25,15 @@ button.addEventListener("click", function () {
 function render() {
   list.innerHTML = "";
 
-  habits.forEach(function (habit, index) {
+  habits.forEach(function (habit) {
     const li = document.createElement("li");
-    li.textContent = habit;
+    li.textContent = habit.name;
 
     li.addEventListener("click", function () {
-      habits.splice(index, 1);
+      habits = habits.filter(function (h) {
+        return h.id !== habit.id;
+      });
+
       localStorage.setItem("habits", JSON.stringify(habits));
       render();
     });
