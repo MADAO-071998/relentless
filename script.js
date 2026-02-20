@@ -29,9 +29,16 @@ function render() {
     const li = document.createElement("li");
     li.textContent = habit.name;
 
+    if (habit.completed) {
+      li.classList.add("completed");
+    }
+
     li.addEventListener("click", function () {
-      habits = habits.filter(function (h) {
-        return h.id !== habit.id;
+      habits = habits.map(function (h) {
+        if (h.id === habit.id) {
+          return { ...h, completed: !h.completed };
+        }
+        return h;
       });
 
       localStorage.setItem("habits", JSON.stringify(habits));
