@@ -28,7 +28,7 @@ h1 {
   margin-bottom: var(--spacing);
 }
 
-button {
+.container > button {
   width: 100%;
   padding: 10px;
   margin-bottom: var(--spacing);
@@ -47,8 +47,19 @@ input {
 }
 
 li {
-  cursor: pointer;
   padding: 8px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+span {
+  flex: 1;
+  cursor: pointer;
+}
+
+li button {
+  cursor: pointer;
 }
 
 .completed {

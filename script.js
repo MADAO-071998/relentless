@@ -27,13 +27,18 @@ function render() {
 
   habits.forEach(function (habit) {
     const li = document.createElement("li");
-    li.textContent = habit.name;
+
+    const span = document.createElement("span");
+    span.textContent = habit.name;
 
     if (habit.completed) {
-      li.classList.add("completed");
+      span.classList.add("completed");
     }
 
-    li.addEventListener("click", function () {
+    const del = document.createElement("button");
+    del.textContent = "X";
+
+    span.addEventListener("click", function () {
       habits = habits.map(function (h) {
         if (h.id === habit.id) {
           return { ...h, completed: !h.completed };
@@ -44,6 +49,18 @@ function render() {
       localStorage.setItem("habits", JSON.stringify(habits));
       render();
     });
+
+    del.addEventListener("click", function () {
+      habits = habits.filter(function (h) {
+        return h.id !== habit.id;
+      });
+
+      localStorage.setItem("habits", JSON.stringify(habits));
+      render();
+    });
+
+    li.appendChild(span);
+    li.appendChild(del);
 
     list.appendChild(li);
   });
