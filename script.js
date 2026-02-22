@@ -21,6 +21,12 @@ button.addEventListener("click", function () {
   render();
 });
 
+input.addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    button.click();
+  }
+});
+
 // Render function
 function render() {
   list.innerHTML = "";
