@@ -2,10 +2,14 @@ const button = document.querySelector("button");
 const list = document.querySelector("ul");
 const input = document.querySelector("input");
 
-// Load state from storage
 let habits = JSON.parse(localStorage.getItem("habits")) || [];
 
-// Add habit
+input.addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    button.click();
+  }
+});
+
 button.addEventListener("click", function () {
   const value = input.value.trim();
   if (!value) return;
@@ -15,27 +19,43 @@ button.addEventListener("click", function () {
     name: value,
     completed: false,
   });
+
   localStorage.setItem("habits", JSON.stringify(habits));
 
   input.value = "";
   render();
 });
 
-input.addEventListener("keydown", function (e) {
-  if (e.key === "Enter") {
-    button.click();
+list.addEventListener("click", function (e) {
+  const action = e.target.dataset.action;
+  if (!action) return;
+
+  const id = Number(e.target.parentElement.dataset.id);
+
+  if (action === "toggle") {
+    habits = habits.map((h) =>
+      h.id === id ? { ...h, completed: !h.completed } : h,
+    );
   }
+
+  if (action === "delete") {
+    habits = habits.filter((h) => h.id !== id);
+  }
+
+  localStorage.setItem("habits", JSON.stringify(habits));
+  render();
 });
 
-// Render function
 function render() {
   list.innerHTML = "";
 
   habits.forEach(function (habit) {
     const li = document.createElement("li");
+    li.dataset.id = habit.id;
 
     const span = document.createElement("span");
     span.textContent = habit.name;
+    span.dataset.action = "toggle";
 
     if (habit.completed) {
       span.classList.add("completed");
@@ -43,27 +63,7 @@ function render() {
 
     const del = document.createElement("button");
     del.textContent = "X";
-
-    span.addEventListener("click", function () {
-      habits = habits.map(function (h) {
-        if (h.id === habit.id) {
-          return { ...h, completed: !h.completed };
-        }
-        return h;
-      });
-
-      localStorage.setItem("habits", JSON.stringify(habits));
-      render();
-    });
-
-    del.addEventListener("click", function () {
-      habits = habits.filter(function (h) {
-        return h.id !== habit.id;
-      });
-
-      localStorage.setItem("habits", JSON.stringify(habits));
-      render();
-    });
+    del.dataset.action = "delete";
 
     li.appendChild(span);
     li.appendChild(del);
@@ -72,5 +72,4 @@ function render() {
   });
 }
 
-// Initial render
 render();
